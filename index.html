@@ -29,6 +29,7 @@ const my_sprite = PIXI.Sprite.from("img/fish1.png");
     my_sprite.x = 20;
     my_sprite.y =200;
     my_sprite.angle = 40;
+  
    // my_sprite.tint= 0x0000FF;
  
    
@@ -70,6 +71,8 @@ my_sprite3.y=100;
   // my_sprite3.tint= 0x47ff63;
    my_sprite3.anchor.set(.5);
    my_sprite3.angle = 10;
+  
+
  
 //add it to the stage
 app.stage.addChild(my_sprite3);
@@ -88,6 +91,22 @@ my_sprite4.y=100;
  
 //add it to the stage
 app.stage.addChild(my_sprite4);
+
+
+
+//add grass
+const my_sprite5 = PIXI.Sprite.from("img/grass.png");
+my_sprite5.x=600;
+my_sprite5.y=100;
+    my_sprite5.scale.set(.20,2);
+    my_sprite5.scale.x *= -1;
+   my_sprite5.anchor.set(.1);
+
+ 
+//add it to the stage
+app.stage.addChild(my_sprite5);
+
+
 //add container to stage
  
 app.stage.addChild(my_container);
@@ -98,12 +117,24 @@ my_container.addChild(my_sprite2);
 my_container.addChild(my_sprite3);
  
 let loop= () =>{
-     //let yfloat = 200;
-     my_container.direction = Math.random() * Math.PI * 2;
-     //let time = Date.now();
-     //let wobble = Math.sin(time/1000)*50;
+    // let yfloat = 200;
    
-    // my_container.y =  wobble;
+     let time = Date.now();
+     let wobble = Math.sin(time/5000)*30;
+   
+     my_sprite.y =  200 + wobble;
+     my_sprite.x = 400 + wobble ;
+
+
+    let wobble2 = Math.sin(time/5000)*40;
+    my_sprite2.y = 300 + wobble2;
+    my_sprite2.x = 300 + wobble2;
+
+    let wobble3 = Math.sin(time/5000)*40;
+    my_sprite3.y = 100 + wobble3;
+    my_sprite3.x = 100 + wobble3;
+
+
     requestAnimationFrame(loop);
 }
   loop();
