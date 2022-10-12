@@ -54,7 +54,7 @@ document.body.appendChild(app.view);
  
 //our fish 2
 const my_sprite2 = PIXI.Sprite.from("img/fish2.png");
-my_sprite2.x=300;
+my_sprite2.x=200;
 my_sprite2.y=400;
     my_sprite2.scale.set(-.2,.2);
     my_sprite2.scale.x *= -1;
@@ -66,7 +66,7 @@ my_sprite2.y=400;
 //add it to the stage
 app.stage.addChild(my_sprite2);
  
-
+/*
  // draggable event listeners
    let dragging = false;
         offsetX = 0;
@@ -88,7 +88,7 @@ app.stage.addChild(my_sprite2);
         my_sprite2.on("pointerup", (e) => {
             dragging = false;
         });
-
+*/
 
 
 // give us the view for fish 3
@@ -280,6 +280,16 @@ app.stage.addChild(ourSlider);
 
 
 
+   //fish that goes up
+    my_sprite2.interactive = true;
+       my_sprite2.defaultCursor = 'pointer';
+      my_sprite2.on("pointertap", () => {
+            goUp();
+        })
+
+
+   
+
 
 let Animate = {};   //Just a blank object for now.
     
@@ -296,6 +306,8 @@ let Animate = {};   //Just a blank object for now.
         Applying the timing model to our objects gives us our "animation model" and thus the animation. :-)
 
     */
+
+
 
     Animate.to = function(obj,end) {
 
@@ -359,8 +371,185 @@ let Animate = {};   //Just a blank object for now.
 
         //End Promise
         });
+     
+        ///tint 
+
+        Animate.tint = function(obj, end){
+
+    return new Promise( (resolve,reject) => {
+    let start = {
+     tint: obj.tint,
+    }
+
+    if (end.duration == undefined) end.duration = 0;
+    if (end.easing == undefined) end.easing = Animate.linear;
+
+    var startTime = Date.now();
+
+    function loop() {
+
+
+
+        //Calculate our delta
+        let ticker = Date.now() - startTime;
+        let delta = ticker/end.duration;
+        let ease = end.easing(delta);
+
+        //If we're done, just snap to the end!
+        if (delta >= 1 || end.duration === 0) {
+          obj.tint = end.tint;
+          console.log("Done");
+            
+            resolve();
+            return;
+        }
+        obj.animationID = requestAnimationFrame(loop);
+    }
+           cancelAnimationFrame(obj.animationID);
+            loop();
+})
+}
+
 
     };
+
+    // scale
+
+
+    Animate.scale = function(obj, end){
+
+return new Promise( (resolve,reject) => {
+let start = {
+    sx: obj.scale.x,
+    sy: obj.scale.y
+}
+
+if (end.duration == undefined) end.duration = 0;
+if (end.easing == undefined) end.easing = Animate.linear;
+
+var startTime = Date.now();
+
+function loop() {
+
+
+
+    //Calculate our delta
+    let ticker = Date.now() - startTime;
+    let delta = ticker/end.duration;
+    let ease = end.easing(delta);
+
+    //If we're done, just snap to the end!
+    if (delta >= 1 || end.duration === 0) {
+        obj.scale.x = end.sx;
+        obj.scale.y = end.sy;
+      console.log("Scale Done");
+        
+        resolve();
+        return;
+    }
+    obj.animationID = requestAnimationFrame(loop);
+}
+       cancelAnimationFrame(obj.animationID);
+        loop();
+})
+}
+
+
+
+
+
+
+
+
+
+
+// rotation/angle
+
+Animate.angle = function(obj, end){
+
+return new Promise( (resolve,reject) => {
+let start = {
+ angle: obj.angle,
+}
+
+if (end.duration == undefined) end.duration = 0;
+if (end.easing == undefined) end.easing = Animate.linear;
+
+var startTime = Date.now();
+
+function loop() {
+
+
+
+    //Calculate our delta
+    let ticker = Date.now() - startTime;
+    let delta = ticker/end.duration;
+    let ease = end.easing(delta);
+
+    //If we're done, just snap to the end!
+    if (delta >= 1 || end.duration === 0) {
+      obj.angle = end.angle;
+      console.log("angle Done");
+        
+        resolve();
+        return;
+    }
+    obj.animationID = requestAnimationFrame(loop);
+}
+       cancelAnimationFrame(obj.animationID);
+        loop();
+})
+}
+
+
+
+
+
+
+
+
+    //alpha
+
+
+
+    
+Animate.alpha = function(obj, end){
+
+return new Promise( (resolve,reject) => {
+let start = {
+ alpha: obj.alpha,
+}
+
+if (end.duration == undefined) end.duration = 0;
+if (end.easing == undefined) end.easing = Animate.linear;
+
+var startTime = Date.now();
+
+function loop() {
+
+
+
+    //Calculate our delta
+    let ticker = Date.now() - startTime;
+    let delta = ticker/end.duration;
+    let ease = end.easing(delta);
+
+    //If we're done, just snap to the end!
+    if (delta >= 1 || end.duration === 0) {
+      obj.alpha = end.alpha;
+      console.log("alpha Done");
+        
+        resolve();
+        return;
+    }
+    obj.animationID = requestAnimationFrame(loop);
+}
+       cancelAnimationFrame(obj.animationID);
+        loop();
+})
+}
+
+
 
     let moveAround = async () => {
         Animate.from(my_sprite,{x:0,y:0});
@@ -371,7 +560,7 @@ let Animate = {};   //Just a blank object for now.
 
     /*
 
-        Let's also add a .from() function, which is just a sortcut for duration:0
+        Let's also add a .from() function, which is just a shortcut for duration:0
 
         This way we can call Animate.from() and an Animate.to().
 
@@ -560,6 +749,7 @@ let Animate = {};   //Just a blank object for now.
                     x:300,y:320,
                     duration:2000,
                     easing:Animate.easeInOut
+                    
                 });
                 await Animate.to(my_sprite,{
                     x:300,y:280,
@@ -569,27 +759,36 @@ let Animate = {};   //Just a blank object for now.
                 idleSwim1();
             }
             idleSwim1();
+//idley bob fish 
 
-            async function idleSwim2() {
-                await Animate.to(my_sprite2,{
-                    x:100,y:20,
+            async function idleBob() {
+
+               
+              await Animate.to(my_sprite2,{
+                    x:100,y:300,
                     duration:1200,
                     easing:Animate.easeInOut
                 });
                 await Animate.to(my_sprite2,{
-                    x:200,y:60,
+                    x:100,y:360,
                     duration:1200,
                     easing:Animate.easeInOut
+                   
                 });
-                idleSwim2();
+            
+              
+    
+                idleBob();
             }
-            idleSwim2();
+            idleBob();
+       
+           
 
 
 
             async function idleSwim3() {
                 await Animate.to(my_sprite3,{
-                    x:200,y:320,
+                    x:300,y:400,
                     duration:2000,
                     easing:Animate.easeInOut
                 });
@@ -601,6 +800,37 @@ let Animate = {};   //Just a blank object for now.
                 idleSwim3();
             }
             idleSwim3();
+
+           
+            let goUp = async () => {
+            await Animate.to(my_sprite2, {
+                x: 100, y: 40,
+                 duration: 3000, 
+                 easing:Animate.easeIn});
+            await Animate.to(my_sprite2, {
+                x: 50, y: 100, 
+                duration: 3000,
+                 easing:Animate.easeOut});
+            idleBob();
+        }
+        
+  // glass tap
+  app.renderer.view.addEventListener('click', async function(e) {
+        var xCoord = e.clientX;
+        var yCoord = e.clientY;
+        Animate.from( my_sprite,{
+            x:200,
+            y:150});
+        await Animate.to( my_sprite,
+        {x:xCoord,
+            y:yCoord,
+            duration:3000});
+        await Animate.to( my_sprite,
+        {x:300,y:150,
+            duration:3000});
+            idleSwim1();
+      });
+      
     /*
 
         Finally, we can add in a personal animation loop for the same kind of animations we did in the first place
@@ -637,6 +867,17 @@ let Animate = {};   //Just a blank object for now.
         loop();
 
     };
+   /* 
+    Make one of your fish:
+            - idly bob around, 
+            - when clicked/tapped, swim up to the surface, 
+            - swim back down, and 
+            - resume idly bobbing
+   
+   
+   */
+    // 
+
 
     /*
 
@@ -649,7 +890,7 @@ let Animate = {};   //Just a blank object for now.
             - rotation/angle
             - tint
             - alpha
-
+ 
         3) Make one of your fish:
             - idly bob around, 
             - when clicked/tapped, swim up to the surface, 
